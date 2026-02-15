@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken');
 
 const app = express();
 app.use(express.json());
+
+
 const corsOptions = {
   origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',').map(s => s.trim()) : true,
   credentials: true,
@@ -338,6 +340,18 @@ app.post('/api/debug/create-test-user', async (req, res) => {
     res.status(500).json({ message: 'Failed to create test user', error: err.message });
   }
 });
+
+// Serve React frontend in production
+if (process.env.NODE_ENV === 'production') {
+  const frontendPath = path.join(__dirname, '../laundry_system-main/dist');
+
+  app.use(express.static(frontendPath));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendPath, 'index.html'));
+  });
+}
+
 
 app.listen(PORT, () => {
   console.log(`API server running on http://localhost:${PORT}`);
