@@ -17,9 +17,6 @@
   "dependencies": {
     "concurrently": "^8.2.2"
   },
-  "devDependencies": {
-  "vite": "^7.1.8",
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/SUHASHVELU/full_stack_.git"
