@@ -30,11 +30,3 @@
   },
   "homepage": "https://github.com/SUHASHVELU/full_stack_#readme"
 }
-
-
-git init
-git add README.md
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/suhash-velusamy/LMS.git
-git push -u origin main
