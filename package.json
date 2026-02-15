@@ -5,15 +5,15 @@
   "main": "index.js",
   "scripts": {
   "dev": "concurrently \"npm run client:dev\" \"npm run server:dev\"",
-  "build": "npm run client:build && npm run server:build",
-  "start": "npm run server:start",
+  "build": "cd laundry_system-main && npm install && npm run build && cd ../server && npm install && npm run build",
+  "start": "cd server && npm start",
   "client:dev": "cd laundry_system-main && npm run dev",
   "client:build": "cd laundry_system-main && npm run build",
   "client:start": "cd laundry_system-main && npm run preview",
   "server:dev": "cd server && npm run dev",
   "server:build": "cd server && npm run build",
   "server:start": "cd server && npm run start"
-},
+  },
   "dependencies": {
     "concurrently": "^8.2.2"
   },
