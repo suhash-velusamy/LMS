@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const cors = require('cors');
+const path = require('path');
 const jwt = require('jsonwebtoken');
 
 const app = express();
@@ -342,15 +343,11 @@ app.post('/api/debug/create-test-user', async (req, res) => {
 });
 
 // Serve React frontend in production
-if (process.env.NODE_ENV === 'production') {
-  const frontendPath = path.join(__dirname, '../laundry_system-main/dist');
-
-  app.use(express.static(frontendPath));
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(frontendPath, 'index.html'));
-  });
-}
+const frontendPath = path.join(__dirname, '../laundry_system-main/dist');
+app.use(express.static(frontendPath));
+app.use((req, res) => {
+  res.sendFile(path.join(frontendPath, 'index.html'));
+});
 
 
 app.listen(PORT, () => {
