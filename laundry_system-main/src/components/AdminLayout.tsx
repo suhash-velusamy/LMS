@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  Package, 
-  Settings, 
+import {
+  Package,
+  Settings,
   ShoppingCart,
   Truck,
-  Menu,
   X,
   LogOut,
-  Tag
+  Tag,
+  Shirt
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -17,9 +17,19 @@ interface AdminLayoutProps {
 }
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [, setSidebarOpen] = useState(false);
   const { user, logout } = useAuth();
   const location = useLocation();
+
+  const BrandLogo = ({ className = '' }: { className?: string }) => (
+    <Link
+      to="/"
+      className={`flex items-center space-x-2 text-blue-600 hover:text-blue-700 transition-colors ${className}`}
+    >
+      <Shirt className="h-6 w-6" />
+      <span className="text-lg font-bold">LaundryPro</span>
+    </Link>
+  );
 
   const navigation = [
     { name: 'Orders', href: '/admin/orders', icon: Package },
@@ -55,7 +65,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           </div>
           <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
             <div className="flex-shrink-0 flex items-center px-4">
-              <h1 className="text-xl font-bold text-gray-900">Admin Navbar</h1>
+              <BrandLogo />
             </div>
             <nav className="mt-5 px-2 space-y-1">
               {navigation.map((item) => {
@@ -95,7 +105,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           <div className="flex flex-col h-0 flex-1 border-r border-gray-200 bg-white">
             <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
               <div className="flex items-center flex-shrink-0 px-4">
-                <h1 className="text-xl font-bold text-gray-900">Admin Navbar</h1>
+                <BrandLogo />
               </div>
               <nav className="mt-5 flex-1 px-2 space-y-1">
                 {navigation.map((item) => {
@@ -142,7 +152,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         <div className="sticky top-0 z-10 lg:hidden bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200">
           <div className="px-3 py-2">
             <div className="flex items-center justify-between mb-2">
-              <div className="text-base font-semibold text-gray-900">Admin Navbar</div>
+              <BrandLogo className="text-base" />
               <button
                 onClick={logout}
                 className="inline-flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-900"
@@ -174,7 +184,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         {/* Desktop top navbar */}
         <div className="hidden lg:block sticky top-0 z-10 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200">
           <div className="px-6 py-3 flex items-center justify-between">
-            <div className="text-lg font-semibold text-gray-900">Admin Navbar</div>
+            <BrandLogo />
             <nav className="flex items-center space-x-1">
               {navigation.map((item) => {
                 const Icon = item.icon;

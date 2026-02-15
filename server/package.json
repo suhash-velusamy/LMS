@@ -1,4 +1,12 @@
 {
+  "name": "laundry-system-server",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build": "echo \"No build required for Node server\""
+  },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",

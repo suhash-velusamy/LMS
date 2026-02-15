@@ -20,8 +20,28 @@ const Services: React.FC = () => {
     { key: 'washing', label: 'Washing Services' },
     { key: 'ironing', label: 'Ironing Services' },
     { key: 'dry-cleaning', label: 'Dry Cleaning' },
-    { key: 'special', label: 'Special Services' }
+    
   ];
+
+  const _publicBase = import.meta.env.BASE_URL || '/';
+  const fallbackImages = [
+    _publicBase + 'images/i1.jpeg',
+    _publicBase + 'images/i2.jpeg',
+    _publicBase + 'images/i3.jpeg',
+    _publicBase + 'images/i4.jpeg',
+    _publicBase + 'images/i5.jpeg',
+    _publicBase + 'images/i6.jpeg',
+    _publicBase + 'images/i7.jpeg',
+    _publicBase + 'images/i8.jpeg',
+    _publicBase + 'images/i9.jpeg'
+  ];
+
+  const getServiceImage = (service: any, index: number) => {
+    if (service.image && typeof service.image === 'string' && service.image.trim() !== '') {
+      return service.image;
+    }
+    return fallbackImages[index % fallbackImages.length];
+  };
 
   const getTotalAmount = () => {
     try {
@@ -67,13 +87,14 @@ const Services: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Header */}
-      <section className="bg-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Our Services</h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+      <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-violet-600 to-blue-800 text-white py-20 md:py-24">
+        <div className="absolute inset-0 opacity-30" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.05\"%3E%3Cpath d=\"M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')" }}></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center animate-fade-in">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3">Our Services</h1>
+            <p className="text-sm md:text-base text-blue-100 max-w-2xl mx-auto">
               Choose from our comprehensive range of professional laundry and dry cleaning services
             </p>
           </div>
@@ -82,20 +103,20 @@ const Services: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Category Filter */}
-        <div className="mb-8">
-          <div className="flex items-center space-x-2 mb-4">
-            <Filter className="h-5 w-5 text-gray-600" />
-            <h2 className="text-lg font-semibold text-gray-900">Filter by Category</h2>
+        <div className="mb-10">
+          <div className="flex items-center space-x-2 mb-6">
+            <Filter className="h-6 w-6 text-blue-600" />
+            <h2 className="text-base md:text-lg font-bold text-gray-900">Filter by Category</h2>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             {categories.map(category => (
               <button
                 key={category.key}
                 onClick={() => setSelectedCategory(category.key)}
-                className={`px-4 py-2 rounded-lg border transition-colors ${
+                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 ${
                   selectedCategory === category.key
-                    ? 'bg-blue-600 text-white border-blue-600'
-                    : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
+                    ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-lg scale-105'
+                    : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-blue-300 hover:shadow-md'
                 }`}
               >
                 {category.label}
@@ -108,22 +129,27 @@ const Services: React.FC = () => {
           {/* Services Grid */}
           <div className="flex-1">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {filteredServices.map(service => (
-                <div key={service.id} onClick={() => service.active === false ? null : navigate(`/services/${service.id}`)} className={`bg-white rounded-xl shadow-md overflow-hidden transition-shadow ${service.active === false ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg cursor-pointer'}`}>
-                  <img
-                    src={service.image}
-                    alt={service.name}
-                    className="w-full h-48 object-cover"
-                  />
+              {filteredServices.map((service, index) => (
+                <div key={service.id} onClick={() => service.active === false ? null : navigate(`/services/${service.id}`)} className={`card card-hover overflow-hidden group ${service.active === false ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
+                  <div className="relative overflow-hidden">
+                    <img
+                      src={getServiceImage(service, index)}
+                      alt={service.name}
+                      className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute top-4 right-4">
+                      <span className="badge bg-white/90 backdrop-blur-sm text-blue-600 font-semibold px-3 py-1">
+                        {service.category.replace('-', ' ').toUpperCase()}
+                      </span>
+                    </div>
+                  </div>
                   <div className="p-6">
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
-                        <h3 className="text-xl font-semibold text-gray-900">{service.name}</h3>
-                        <span className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full mt-1">
-                          {service.category.replace('-', ' ').toUpperCase()}
-                        </span>
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="flex-1">
+                        <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2">{service.name}</h3>
                       </div>
-                      <span className="text-2xl font-bold text-blue-600">From ₹{getMinDisplayPrice(service)}</span>
+                      <span className="text-lg md:text-xl font-bold gradient-text ml-4">From ₹{getMinDisplayPrice(service)}</span>
                     </div>
 
                     <p className="text-gray-600 mb-4">{service.description}</p>
@@ -149,7 +175,7 @@ const Services: React.FC = () => {
                       <h4 className="font-medium text-gray-900 mb-2">Quality Options:</h4>
                       <div className="flex space-x-2 text-sm">
                         <span className="px-2 py-1 bg-gray-100 rounded">Normal (1x)</span>
-                        <span className="px-2 py-1 bg-yellow-100 rounded">Premium (1.5x)</span>
+                        
                         <span className="px-2 py-1 bg-red-100 rounded">Express (2x)</span>
                       </div>
                     </div>
@@ -158,7 +184,7 @@ const Services: React.FC = () => {
                       <button
                         onClick={(e) => { if (service.active === false) return; e.stopPropagation(); navigate(`/services/${service.id}`); }}
                         disabled={service.active === false}
-                        className={`w-full text-white py-2 px-4 rounded-lg font-medium ${service.active === false ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 transition-colors'}`}
+                        className={`w-full btn ${service.active === false ? 'bg-gray-400 cursor-not-allowed' : 'btn-primary'} py-3`}
                       >
                         {service.active === false ? 'Unavailable' : 'Customize & Order'}
                       </button>

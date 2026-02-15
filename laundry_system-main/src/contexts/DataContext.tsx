@@ -134,6 +134,36 @@ export const useData = () => {
   return context;
 };
 
+const _publicBase = (import.meta.env && (import.meta.env.BASE_URL as string)) || '/';
+const serviceImagePool = [
+  _publicBase + 'images/i1.jpeg',
+  _publicBase + 'images/i2.jpeg',
+  _publicBase + 'images/i3.jpeg',
+  _publicBase + 'images/i4.jpeg',
+  _publicBase + 'images/i5.jpeg',
+  _publicBase + 'images/i6.jpeg',
+  _publicBase + 'images/i7.jpeg',
+  _publicBase + 'images/i8.jpeg',
+  _publicBase + 'images/i9.jpeg'
+];
+
+const hashString = (value: string) => {
+  let hash = 0;
+  for (let i = 0; i < value.length; i++) {
+    hash = (hash << 5) - hash + value.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+};
+
+const normalizeServices = (list: Service[]) =>
+  list.map((service, index) => {
+    if (service.image && service.image.trim() !== '') return service;
+    const seed = service.id || service.name || String(index);
+    const fallbackIndex = (hashString(seed) + index) % serviceImagePool.length;
+    return { ...service, image: serviceImagePool[fallbackIndex] };
+  });
+
 export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [dressTypes, setDressTypes] = useState<DressType[]>(() => {
     try {
@@ -212,11 +242,11 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [services, setServices] = useState<Service[]>(() => {
     try {
       const saved = localStorage.getItem('services');
-      if (saved) return JSON.parse(saved);
+      if (saved) return normalizeServices(JSON.parse(saved));
     } catch (e) {
       console.warn('Failed to load services from localStorage:', e);
     }
-    return [
+    return normalizeServices([
     {
       id: 'wash-normal',
       name: 'Wash (Normal)',
@@ -224,7 +254,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       category: 'washing',
       basePrice: 30,
       duration: '24-48 hours',
-      image: '/i1.jpeg',
+      image: '/images/i1.jpeg',
       features: ['Eco-friendly detergents', 'Fabric softener', 'Careful handling'],
       active: true,
       qualityMultipliers: { normal: 1.0, premium: 1.5, express: 2.0 },
@@ -237,7 +267,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       category: 'washing',
       basePrice: 50,
       duration: '2-3 days',
-      image: '/i2.jpeg',
+      image: '/images/i2.jpeg',
       features: ['Gentle cycle', 'Premium detergents', 'Individual attention', 'Fabric protection'],
       active: true,
       qualityMultipliers: { normal: 1.0, premium: 1.5, express: 2.0 },
@@ -250,7 +280,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       category: 'washing',
       basePrice: 35,
       duration: '24-48 hours',
-      image: '/i3.jpeg',
+      image: '/images/i3.jpeg',
       features: ['Wash, dry & fold', 'Neat folding', 'Ready to wear'],
       active: true,
       qualityMultipliers: { normal: 1.0, premium: 1.5, express: 2.0 },
@@ -263,7 +293,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       category: 'washing',
       basePrice: 50,
       duration: '2-3 days',
-      image: '/i4.jpeg',
+      image: '/images/i4.jpeg',
       features: ['Wash & iron', 'Professional pressing', 'Crisp finish'],
       active: true,
       qualityMultipliers: { normal: 1.0, premium: 1.5, express: 2.0 },
@@ -276,7 +306,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       category: 'ironing',
       basePrice: 10,
       duration: 'Same day',
-      image: '/i5.jpeg',
+      image: '/images/i5.jpeg',
       features: ['Professional pressing', 'Crisp finish', 'Same day service'],
       active: true,
       qualityMultipliers: { normal: 1.0, premium: 1.5, express: 2.0 },
@@ -289,7 +319,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       category: 'ironing',
       basePrice: 20,
       duration: '1-2 days',
-      image: '/i6.jpeg',
+      image: '/images/i6.jpeg',
       features: ['Specialized pressing', 'Careful handling', 'Professional finish'],
       active: true,
       qualityMultipliers: { normal: 1.0, premium: 1.5, express: 2.0 },
@@ -302,7 +332,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       category: 'dry-cleaning',
       basePrice: 70,
       duration: '3-5 days',
-      image: '/i7.jpeg',
+      image: '/images/i7.jpeg',
       features: ['Professional cleaning', 'Stain treatment', 'Garment protection'],
       active: true,
       qualityMultipliers: { normal: 1.0, premium: 1.5, express: 2.0 },
@@ -315,7 +345,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       category: 'dry-cleaning',
       basePrice: 120,
       duration: '5-7 days',
-      image: '/i8.jpeg',
+      image: '/images/i9.jpeg',
       features: ['Gentle cleaning', 'Fabric preservation', 'Professional pressing'],
       active: true,
       qualityMultipliers: { normal: 1.0, premium: 1.5, express: 2.0 },
@@ -328,19 +358,20 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       category: 'dry-cleaning',
       basePrice: 150,
       duration: '5-7 days',
-      image: '/i9.jpeg',
+      image: '/images/i9.jpeg',
       features: ['Heavy-duty cleaning', 'Professional pressing', 'Quality guarantee'],
       active: true,
       qualityMultipliers: { normal: 1.0, premium: 1.5, express: 2.0 },
       dressTypes: ['jacket', 'blanket']
     }
-  ];
+  ]);
   });
 
   // Persist services
   const persistServices = (next: Service[]) => {
-    setServices(next);
-    try { localStorage.setItem('services', JSON.stringify(next)); } catch (e) {}
+    const normalized = normalizeServices(next);
+    setServices(normalized);
+    try { localStorage.setItem('services', JSON.stringify(normalized)); } catch (e) {}
   };
 
   // Cross-tab sync for services
@@ -349,7 +380,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (e.key === 'services') {
         try {
           const parsed = e.newValue ? JSON.parse(e.newValue) : [];
-          if (Array.isArray(parsed)) setServices(parsed);
+          if (Array.isArray(parsed)) setServices(normalizeServices(parsed));
         } catch {}
       }
     };
@@ -501,7 +532,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const addUser = (user: any) => {
-    const existingUser = users.find(u => u.id === user.id || u.email === user.email);
+    const existingUser = users.find((u: any) => u.id === user.id || u.email === user.email);
     if (!existingUser) {
       const newUser = {
         ...user,
@@ -538,11 +569,6 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       return [];
     }
   });
-
-  const persistCart = (next: CartItem[]) => {
-    setCart(next);
-    try { localStorage.setItem('cart', JSON.stringify(next)); } catch (e) {}
-  };
 
   const calculateItemPrice = (serviceItem: ServiceItem): number => {
     const service = services.find(s => s.id === serviceItem.serviceId);
@@ -592,7 +618,6 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
 
     setCart(prev => {
-      const itemId = `${serviceItem.serviceId}-${serviceItem.dressTypeId}-${serviceItem.quality}`;
       const existing = prev.find(i => 
         i.serviceId === serviceItem.serviceId && 
         i.dressTypeId === serviceItem.dressTypeId && 

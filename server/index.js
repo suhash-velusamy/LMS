@@ -14,8 +14,8 @@ app.use(cors(corsOptions));
 
 // Config
 const PORT = process.env.PORT || 5000;
-const JWT_SECRET = process.env.JWT_SECRET || 'dev_jwt_secret_change_me';
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/laundry_app';
+const JWT_SECRET = process.env.JWT_SECRET || 'qwertyuiopasdfghjklzxcvbnm1234567890qwertyuiopasdfghjklzxcvbnm';
+const MONGO_URI = process.env.MONGO_URI || `mongodb+srv://suhash_LMS:SUHASHvelu1947@lms.45pvhlf.mongodb.net/?appName=LMS`;
 
 // Connect to MongoDB with error handling
 mongoose

@@ -122,12 +122,12 @@ const Payment: React.FC = () => {
 
   const getPaymentIcon = (type: string) => {
     switch (type) {
-      case 'card': return <CreditCard className="h-6 w-6" />;
-      case 'upi': return <Smartphone className="h-6 w-6" />;
-      case 'netbanking': return <Building2 className="h-6 w-6" />;
-      case 'wallet': return <Wallet className="h-6 w-6" />;
-      case 'cash': return <Banknote className="h-6 w-6" />;
-      default: return <CreditCard className="h-6 w-6" />;
+      case 'card': return <CreditCard className="h-5 w-5" />;
+      case 'upi': return <Smartphone className="h-5 w-5" />;
+      case 'netbanking': return <Building2 className="h-5 w-5" />;
+      case 'wallet': return <Wallet className="h-5 w-5" />;
+      case 'cash': return <Banknote className="h-5 w-5" />;
+      default: return <CreditCard className="h-5 w-5" />;
     }
   };
 
@@ -140,36 +140,39 @@ const Payment: React.FC = () => {
     switch (method.type) {
       case 'card':
         return (
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Card Number</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Card Number</label>
               <input
                 type="text"
                 placeholder="1234 5678 9012 3456"
                 value={formData.cardNumber}
                 onChange={(e) => handleInputChange('cardNumber', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="input"
+                maxLength={19}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Expiry Date</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Expiry Date</label>
                 <input
                   type="text"
                   placeholder="MM/YY"
                   value={formData.expiryDate}
                   onChange={(e) => handleInputChange('expiryDate', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input"
+                  maxLength={5}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">CVV</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">CVV</label>
                 <input
                   type="text"
                   placeholder="123"
                   value={formData.cvv}
                   onChange={(e) => handleInputChange('cvv', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input"
+                  maxLength={4}
                 />
               </div>
             </div>
@@ -179,15 +182,16 @@ const Payment: React.FC = () => {
       case 'upi':
         return (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">UPI ID</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">UPI ID</label>
             <input
               type="text"
               placeholder="yourname@paytm"
               value={formData.upiId}
               onChange={(e) => handleInputChange('upiId', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="input"
             />
-            <p className="text-sm text-gray-600 mt-2">
+            <p className="text-sm text-gray-600 mt-3 flex items-center">
+              <Smartphone className="h-4 w-4 mr-2 text-blue-600" />
               You'll be redirected to your UPI app to complete the payment
             </p>
           </div>
@@ -196,11 +200,11 @@ const Payment: React.FC = () => {
       case 'netbanking':
         return (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Select Bank</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Select Bank</label>
             <select
               value={formData.bankName}
               onChange={(e) => handleInputChange('bankName', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="input"
             >
               <option value="">Select your bank</option>
               <option value="sbi">State Bank of India</option>
@@ -215,11 +219,11 @@ const Payment: React.FC = () => {
       case 'wallet':
         return (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Select Wallet</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Select Wallet</label>
             <select
               value={formData.walletType}
               onChange={(e) => handleInputChange('walletType', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="input"
             >
               <option value="">Select wallet</option>
               <option value="paytm">Paytm</option>
@@ -233,10 +237,12 @@ const Payment: React.FC = () => {
       case 'cash':
         return (
           <div className="text-center py-8">
-            <Banknote className="h-16 w-16 text-green-500 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Cash on Delivery</h3>
-            <p className="text-gray-600">
-              Pay ₹{totalAmount.toFixed(2)} when your order is delivered
+            <div className="inline-flex items-center justify-center p-6 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl mb-4">
+              <Banknote className="h-16 w-16 text-green-600" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Cash on Delivery</h3>
+            <p className="text-gray-600 text-lg">
+              Pay <span className="font-bold text-green-600">₹{totalAmount.toFixed(2)}</span> when your order is delivered
             </p>
           </div>
         );
@@ -247,37 +253,58 @@ const Payment: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          <div className="p-6 border-b border-gray-200">
-            <h1 className="text-2xl font-bold text-gray-900">Payment</h1>
-            <p className="text-gray-600 mt-2">Complete your payment to place the order</p>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Header */}
+        <div className="mb-6 text-center">
+          <h1 className="text-lg md:text-xl font-bold text-gray-900 mb-1">
+            Complete <span className="gradient-text">Payment</span>
+          </h1>
+          <p className="text-xs text-gray-600">Secure and fast payment processing</p>
+        </div>
+
+        <div className="card overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-600 to-violet-600 p-6 text-white">
+            <h2 className="text-base font-bold mb-1">Payment Details</h2>
+            <p className="text-xs text-blue-100">Choose your preferred payment method</p>
           </div>
 
           <div className="p-6">
-            {/* Removed extra payment info banner as requested */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Payment Methods */}
               <div>
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Select Payment Method</h2>
+                <h2 className="text-sm md:text-base font-semibold text-gray-900 mb-3 flex items-center">
+                  <CreditCard className="h-4 w-4 mr-2 text-blue-600" />
+                  Select Payment Method
+                </h2>
                 <div className="space-y-3">
                   {paymentMethods.map(method => (
                     <button
                       key={method.id}
                       onClick={() => handlePaymentMethodSelect(method.id)}
-                      className={`w-full p-4 border-2 rounded-lg text-left transition-colors ${
+                      className={`w-full p-3 border-2 rounded-xl text-left transition-all duration-300 transform hover:scale-[1.02] ${
                         selectedPaymentMethod === method.id
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-200 hover:border-gray-300'
+                          ? 'border-blue-500 bg-gradient-to-r from-blue-50 to-violet-50 shadow-lg'
+                          : 'border-gray-200 hover:border-blue-300 hover:shadow-md bg-white'
                       }`}
                     >
-                      <div className="flex items-center space-x-3">
-                        {getPaymentIcon(method.type)}
-                        <div>
-                          <h3 className="font-medium text-gray-900">{method.name}</h3>
-                          <p className="text-sm text-gray-600">{method.description}</p>
+                      <div className="flex items-center space-x-4">
+                        <div className={`p-2 rounded-xl ${
+                          selectedPaymentMethod === method.id
+                            ? 'bg-gradient-to-br from-blue-500 to-violet-500 text-white'
+                            : 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {getPaymentIcon(method.type)}
                         </div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-gray-900 mb-1 text-sm">{method.name}</h3>
+                          <p className="text-xs text-gray-600">{method.description}</p>
+                        </div>
+                        {selectedPaymentMethod === method.id && (
+                          <div className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-violet-500 flex items-center justify-center">
+                            <div className="w-3 h-3 rounded-full bg-white"></div>
+                          </div>
+                        )}
                       </div>
                     </button>
                   ))}
@@ -285,8 +312,8 @@ const Payment: React.FC = () => {
 
                 {/* Payment Form */}
                 {selectedPaymentMethod && (
-                  <div className="mt-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Details</h3>
+                  <div className="mt-6 p-4 bg-gradient-to-br from-gray-50 to-white rounded-xl border border-gray-200">
+                    <h3 className="text-base font-semibold text-gray-900 mb-4">Payment Details</h3>
                     {renderPaymentForm()}
                   </div>
                 )}
@@ -294,31 +321,36 @@ const Payment: React.FC = () => {
 
               {/* Order Summary */}
               <div>
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Summary</h2>
-                <div className="bg-gray-50 rounded-lg p-6">
+                <h2 className="text-sm md:text-base font-semibold text-gray-900 mb-3 flex items-center">
+                  <CreditCard className="h-4 w-4 mr-2 text-blue-600" />
+                  Order Summary
+                </h2>
+                <div className="card-gradient p-4">
                   <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Subtotal</span>
-                      <span className="font-medium">₹{(originalTotal ?? totalAmount).toFixed(2)}</span>
+                    <div className="flex justify-between py-2">
+                      <span className="text-gray-600 font-medium">Subtotal</span>
+                      <span className="font-semibold text-gray-900">₹{(originalTotal ?? totalAmount).toFixed(2)}</span>
                     </div>
                     {computedDiscount > 0 && (
-                      <div className="flex justify-between mt-2">
-                        <span className="text-gray-600">Discount {appliedOffer ? `(${appliedOffer.couponCode} - ${appliedOffer.discountType === 'percentage' ? appliedOffer.discountValue + '%' : '₹' + appliedOffer.discountValue})` : ''}</span>
-                        <span className="font-medium text-green-600">- ₹{computedDiscount.toFixed(2)}</span>
+                      <div className="flex justify-between py-2 bg-green-50 rounded-lg px-3">
+                        <span className="text-gray-700 font-medium">
+                          Discount {appliedOffer ? `(${appliedOffer.couponCode} - ${appliedOffer.discountType === 'percentage' ? appliedOffer.discountValue + '%' : '₹' + appliedOffer.discountValue})` : ''}
+                        </span>
+                        <span className="font-bold text-green-600">- ₹{computedDiscount.toFixed(2)}</span>
                       </div>
                     )}
-                    <div className="flex justify-between mt-2">
+                    <div className="flex justify-between py-2">
                       <span className="text-gray-600">Service Charge</span>
-                      <span className="font-medium">₹0.00</span>
+                      <span className="font-medium text-gray-700">₹0.00</span>
                     </div>
-                    <div className="flex justify-between mt-2">
+                    <div className="flex justify-between py-2">
                       <span className="text-gray-600">Tax</span>
-                      <span className="font-medium">₹0.00</span>
+                      <span className="font-medium text-gray-700">₹0.00</span>
                     </div>
-                    <div className="border-t border-gray-200 pt-4">
-                      <div className="flex justify-between">
-                        <span className="text-lg font-semibold text-gray-900">Total</span>
-                        <span className="text-xl font-bold text-blue-600">₹{totalAmount.toFixed(2)}</span>
+                    <div className="border-t border-gray-300 pt-3 mt-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-semibold text-gray-900">Total Amount</span>
+                        <span className="text-lg font-bold gradient-text">₹{totalAmount.toFixed(2)}</span>
                       </div>
                     </div>
                     
@@ -326,32 +358,35 @@ const Payment: React.FC = () => {
                   </div>
 
                   {paymentError && (
-                    <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                    <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
                       <div className="flex items-center">
-                        <XCircle className="h-5 w-5 text-red-500 mr-2" />
-                        <span className="text-sm text-red-700">{paymentError}</span>
+                        <XCircle className="h-4 w-4 text-red-500 mr-2" />
+                        <span className="text-xs font-medium text-red-700">{paymentError}</span>
                       </div>
                     </div>
                   )}
 
-                  <div className="mt-6 space-y-3">
+                  <div className="mt-6 space-y-2">
                     <button
                       onClick={handlePayment}
                       disabled={isProcessing || !selectedPaymentMethod}
-                      className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium flex items-center justify-center"
+                      className="w-full btn btn-primary py-3 text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                     >
                       {isProcessing ? (
                         <>
-                          <Loader className="h-5 w-5 mr-2 animate-spin" />
+                          <Loader className="h-4 w-4 mr-2 animate-spin" />
                           Processing Payment...
                         </>
                       ) : (
-                        `Pay ₹${totalAmount.toFixed(2)}`
+                        <>
+                          <CreditCard className="h-4 w-4 mr-2" />
+                          Pay ₹{totalAmount.toFixed(2)}
+                        </>
                       )}
                     </button>
                     <button
                       onClick={() => navigate('/checkout')}
-                      className="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors"
+                      className="w-full btn btn-secondary py-2 text-sm"
                     >
                       Back to Checkout
                     </button>

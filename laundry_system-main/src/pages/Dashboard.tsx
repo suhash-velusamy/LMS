@@ -49,62 +49,70 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-10">
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Welcome back, {user?.firstName}!
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
+                Welcome back, <span className="gradient-text">{user?.firstName}!</span>
               </h1>
-              <p className="text-gray-600 mt-2">Manage your laundry orders and account settings</p>
+              <p className="text-sm text-gray-600">Manage your laundry orders and account settings</p>
             </div>
-            <div className="flex items-center space-x-2 text-sm text-gray-500">
-              <RefreshCw className="h-4 w-4 animate-spin" />
+            <div className="flex items-center space-x-2 text-sm text-gray-500 bg-white px-4 py-2 rounded-xl shadow-md">
+              <RefreshCw className="h-4 w-4 animate-spin text-blue-600" />
               <span>Last updated: {lastUpdated.toLocaleTimeString()}</span>
             </div>
           </div>
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+          <div className="card card-hover p-6 bg-gradient-to-br from-blue-50 to-white">
             <div className="flex items-center">
-              <Package className="h-8 w-8 text-blue-600" />
+              <div className="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg">
+                <Package className="h-8 w-8 text-white" />
+              </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Total Orders</p>
-                <p className="text-2xl font-bold text-gray-900">{orderStats.total}</p>
+                <p className="text-3xl font-extrabold text-gray-900">{orderStats.total}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="card card-hover p-6 bg-gradient-to-br from-yellow-50 to-white">
             <div className="flex items-center">
-              <Clock className="h-8 w-8 text-yellow-600" />
+              <div className="p-3 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg">
+                <Clock className="h-8 w-8 text-white" />
+              </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">In Progress</p>
-                <p className="text-2xl font-bold text-gray-900">{orderStats.inProgress}</p>
+                <p className="text-3xl font-extrabold text-gray-900">{orderStats.inProgress}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="card card-hover p-6 bg-gradient-to-br from-green-50 to-white">
             <div className="flex items-center">
-              <CheckCircle className="h-8 w-8 text-green-600" />
+              <div className="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg">
+                <CheckCircle className="h-8 w-8 text-white" />
+              </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Completed</p>
-                <p className="text-2xl font-bold text-gray-900">{orderStats.completed}</p>
+                <p className="text-3xl font-extrabold text-gray-900">{orderStats.completed}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="card card-hover p-6 bg-gradient-to-br from-indigo-50 to-white">
             <div className="flex items-center">
-              <Calendar className="h-8 w-8 text-indigo-600" />
+              <div className="p-3 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl shadow-lg">
+                <Calendar className="h-8 w-8 text-white" />
+              </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Pending Orders</p>
-                <p className="text-2xl font-bold text-gray-900">{orderStats.pending}</p>
+                <p className="text-3xl font-extrabold text-gray-900">{orderStats.pending}</p>
               </div>
             </div>
           </div>
@@ -112,14 +120,14 @@ const Dashboard: React.FC = () => {
 
         {/* Active Offers */}
         {activeOffers.length > 0 && (
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-              <Tag className="h-5 w-5 mr-2 text-green-600" />
+          <div className="mb-10">
+            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+              <Tag className="h-4 w-4 mr-2 text-green-600" />
               Special Offers for You
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {activeOffers.slice(0, 3).map((offer) => (
-                <div key={offer.id} className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-4 border border-green-200">
+                <div key={offer.id} className="card card-hover p-6 bg-gradient-to-br from-green-50 via-blue-50 to-violet-50 border-2 border-green-200">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-gray-900 mb-2">{offer.title}</h3>
@@ -151,7 +159,7 @@ const Dashboard: React.FC = () => {
                     <div className="ml-4">
                       <Link
                         to="/services"
-                        className="bg-green-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
+                        className="btn btn-primary px-4 py-2 text-sm"
                       >
                         Use Now
                       </Link>
@@ -166,15 +174,16 @@ const Dashboard: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Recent Orders */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-md">
-              <div className="p-6 border-b border-gray-200">
+            <div className="card">
+              <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-gray-900">Recent Orders</h2>
+                  <h2 className="text-lg font-bold text-gray-900">Recent Orders</h2>
                   <Link 
                     to="/orders" 
-                    className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+                    className="text-blue-600 hover:text-blue-700 font-semibold text-sm flex items-center space-x-1"
                   >
-                    View all
+                    <span>View all</span>
+                    <Eye className="h-4 w-4" />
                   </Link>
                 </div>
               </div>
@@ -182,7 +191,7 @@ const Dashboard: React.FC = () => {
               <div className="divide-y divide-gray-200">
                 {recentOrders.length > 0 ? (
                   recentOrders.map(order => (
-                    <div key={order.id} className="p-6 hover:bg-gray-50 transition-colors">
+                    <div key={order.id} className="p-6 hover:bg-gradient-to-r hover:from-blue-50 hover:to-white transition-all duration-200">
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
                           <div className="flex items-center space-x-3 mb-2">
@@ -228,36 +237,36 @@ const Dashboard: React.FC = () => {
           {/* Quick Actions & Subscription */}
           <div className="space-y-8">
             {/* Quick Actions */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+            <div className="card p-6">
+              <h3 className="text-base font-bold text-gray-900 mb-4">Quick Actions</h3>
               <div className="space-y-3">
                 <Link 
                   to="/services" 
-                  className="flex items-center p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                  className="flex items-center p-4 bg-gradient-to-r from-blue-50 to-violet-50 hover:from-blue-100 hover:to-violet-100 rounded-xl transition-all duration-200 transform hover:scale-105"
                 >
                   <Plus className="h-5 w-5 text-blue-600 mr-3" />
-                  <span className="text-blue-700 font-medium">New Order</span>
+                  <span className="text-blue-700 font-semibold">New Order</span>
                 </Link>
                 <Link 
                   to="/orders" 
-                  className="flex items-center p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="flex items-center p-4 bg-gray-50 hover:bg-gray-100 rounded-xl transition-all duration-200 transform hover:scale-105"
                 >
                   <Package className="h-5 w-5 text-gray-600 mr-3" />
-                  <span className="text-gray-700 font-medium">Track Orders</span>
+                  <span className="text-gray-700 font-semibold">Track Orders</span>
                 </Link>
                 <Link 
                   to="/history" 
-                  className="flex items-center p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="flex items-center p-4 bg-gray-50 hover:bg-gray-100 rounded-xl transition-all duration-200 transform hover:scale-105"
                 >
                   <History className="h-5 w-5 text-gray-600 mr-3" />
-                  <span className="text-gray-700 font-medium">Order History</span>
+                  <span className="text-gray-700 font-semibold">Order History</span>
                 </Link>
                 <Link 
                   to="/profile" 
-                  className="flex items-center p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="flex items-center p-4 bg-gray-50 hover:bg-gray-100 rounded-xl transition-all duration-200 transform hover:scale-105"
                 >
                   <Calendar className="h-5 w-5 text-gray-600 mr-3" />
-                  <span className="text-gray-700 font-medium">Manage Profile</span>
+                  <span className="text-gray-700 font-semibold">Manage Profile</span>
                 </Link>
               </div>
             </div>

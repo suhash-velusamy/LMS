@@ -33,7 +33,7 @@ const OrderHistory: React.FC = () => {
       name: 'Unknown Service',
       description: 'Service not found',
       basePrice: 0,
-      image: '/i1.jpg'
+      image: (import.meta.env.BASE_URL || '/') + 'images/i1.jpeg'
     };
   };
 

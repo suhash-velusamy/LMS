@@ -56,6 +56,10 @@ const AdminOrders: React.FC = () => {
     return matchesSearch && matchesStatus && matchesDate;
   });
 
+  const sortedOrders = [...filteredOrders].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'pending': return <Clock className="h-4 w-4" />;
@@ -221,7 +225,7 @@ const AdminOrders: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredOrders.map(order => (
+                {sortedOrders.map(order => (
                   <tr key={order.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
@@ -370,7 +374,7 @@ const AdminOrders: React.FC = () => {
                               <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                 <div className="flex items-center space-x-3">
                                   <img 
-                                    src={service.image || '/i1.jpg'} 
+                                    src={service.image || ((import.meta.env.BASE_URL || '/') + 'images/i1.jpeg')} 
                                     alt={service.name}
                                     className="w-12 h-12 object-cover rounded-md"
                                   />

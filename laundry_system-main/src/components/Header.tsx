@@ -19,37 +19,40 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200">
+    <header className="sticky top-0 z-50 glass border-b border-white/20 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 transition-colors">
-            <Shirt className="h-8 w-8" />
-            <span className="text-xl font-bold">LaundryPro</span>
+          <Link to="/" className="flex items-center space-x-3 group">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-violet-600 rounded-xl blur opacity-75 group-hover:opacity-100 transition-opacity"></div>
+              <Shirt className="relative h-10 w-10 text-white p-2 bg-gradient-to-r from-blue-600 to-violet-600 rounded-xl transform group-hover:scale-110 transition-transform duration-300" />
+            </div>
+            <span className="text-xl md:text-2xl font-bold gradient-text">LaundryPro</span>
           </Link>
 
           {/* Navigation & User Actions - All on Right Side */}
           <div className="flex items-center space-x-6">
             {/* Navigation Links */}
-            <nav className="hidden md:flex items-center space-x-6">
-              <Link to="/" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+            <nav className="hidden md:flex items-center space-x-2">
+              <Link to="/" className="px-4 py-2 rounded-lg text-gray-700 hover:text-blue-600 hover:bg-blue-50 font-medium transition-all duration-200">
                 Home
               </Link>
-              <Link to="/services" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+              <Link to="/services" className="px-4 py-2 rounded-lg text-gray-700 hover:text-blue-600 hover:bg-blue-50 font-medium transition-all duration-200">
                 Services
               </Link>
               {isAuthenticated && (
-                <Link to="/dashboard" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+                <Link to="/dashboard" className="px-4 py-2 rounded-lg text-gray-700 hover:text-blue-600 hover:bg-blue-50 font-medium transition-all duration-200">
                   Dashboard
                 </Link>
               )}
-              <Link to="/support" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+              <Link to="/support" className="px-4 py-2 rounded-lg text-gray-700 hover:text-blue-600 hover:bg-blue-50 font-medium transition-all duration-200">
                 Support
               </Link>
             </nav>
 
             {/* Separator */}
-            <div className="hidden md:block h-6 w-px bg-gray-300"></div>
+            <div className="hidden md:block h-8 w-px bg-gradient-to-b from-transparent via-gray-300 to-transparent"></div>
 
             {/* User Actions */}
             <div className="flex items-center space-x-4">
@@ -81,7 +84,7 @@ const Header: React.FC = () => {
                   
                   {/* Notifications Dropdown */}
                   {showNotifications && (
-                    <div className="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg border z-50">
+                    <div className="absolute right-0 mt-2 w-80 glass rounded-2xl shadow-2xl border border-white/20 z-50 animate-scale-in">
                       <div className="py-2">
                         <div className="px-4 py-2 border-b border-gray-200">
                           <h3 className="text-sm font-semibold text-gray-900">Notifications</h3>
@@ -146,7 +149,7 @@ const Header: React.FC = () => {
                   </button>
                   
                   {/* Dropdown Menu */}
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  <div className="absolute right-0 mt-2 w-48 glass rounded-2xl shadow-2xl border border-white/20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 animate-scale-in">
                     <div className="py-1">
                       <Link 
                         to="/history" 
@@ -183,7 +186,7 @@ const Header: React.FC = () => {
                 </Link>
                 <Link 
                   to="/register" 
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors font-medium"
+                  className="btn btn-primary px-6 py-2.5 text-sm"
                 >
                   Sign Up
                 </Link>
@@ -195,22 +198,22 @@ const Header: React.FC = () => {
       </div>
 
       {/* Mobile Navigation */}
-      <div className="md:hidden border-t border-gray-200">
-        <nav className="px-4 py-3 space-y-2">
-          <Link to="/" className="block text-gray-700 hover:text-blue-600 font-medium">
+      <div className="md:hidden border-t border-white/20 bg-white/50 backdrop-blur-sm">
+        <nav className="px-4 py-4 space-y-2">
+          <Link to="/" className="block px-4 py-2 rounded-lg text-gray-700 hover:text-blue-600 hover:bg-blue-50 font-medium transition-all">
             Home
           </Link>
-          <Link to="/services" className="block text-gray-700 hover:text-blue-600 font-medium">
+          <Link to="/services" className="block px-4 py-2 rounded-lg text-gray-700 hover:text-blue-600 hover:bg-blue-50 font-medium transition-all">
             Services
           </Link>
           {isAuthenticated && (
             <>
-              <Link to="/dashboard" className="block text-gray-700 hover:text-blue-600 font-medium">
+              <Link to="/dashboard" className="block px-4 py-2 rounded-lg text-gray-700 hover:text-blue-600 hover:bg-blue-50 font-medium transition-all">
                 Dashboard
               </Link>
             </>
           )}
-          <Link to="/support" className="block text-gray-700 hover:text-blue-600 font-medium">
+          <Link to="/support" className="block px-4 py-2 rounded-lg text-gray-700 hover:text-blue-600 hover:bg-blue-50 font-medium transition-all">
             Support
           </Link>
         </nav>

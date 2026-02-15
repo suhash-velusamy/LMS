@@ -18,7 +18,7 @@ const ServiceDetails: React.FC = () => {
     return init;
   });
 
-  const [quality, setQuality] = useState<'normal' | 'premium' | 'express'>('normal');
+  const [quality, setQuality] = useState<'normal'  | 'express'>('normal');
   const [orderForm, setOrderForm] = useState({ pickupDate: '', pickupTime: '', address: '', notes: '' });
 
   if (!service) {
@@ -95,8 +95,8 @@ const ServiceDetails: React.FC = () => {
                 <div className="flex space-x-4">
                   {[
                     { key: 'normal', label: 'Normal', multiplier: 1.0, icon: '⭐' },
-                    { key: 'premium', label: 'Premium', multiplier: 1.5, icon: '⭐⭐' },
-                    { key: 'express', label: 'Express', multiplier: 2.0, icon: '⭐⭐⭐' }
+                   
+                    { key: 'express', label: 'Express', multiplier: 2.0, icon: '⭐⭐' }
                   ].map(q => (
                     <button
                       key={q.key}

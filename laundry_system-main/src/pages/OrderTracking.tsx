@@ -12,12 +12,12 @@ const OrderTracking: React.FC = () => {
   
   // Helper functions to get service and dress type details
   const getServiceDetails = (serviceId: string) => {
-    return services.find(service => service.id === serviceId) || {
+      return services.find(service => service.id === serviceId) || {
       id: serviceId,
       name: 'Unknown Service',
       description: 'Service not found',
       basePrice: 0,
-      image: '/i1.jpg'
+      image: (import.meta.env.BASE_URL || '/') + 'images/i1.jpeg'
     };
   };
 
@@ -179,7 +179,7 @@ const OrderTracking: React.FC = () => {
                         <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
                           <div className="flex items-center space-x-3">
                             <img 
-                              src={service.image || '/i1.jpg'} 
+                              src={service.image || ((import.meta.env.BASE_URL || '/') + 'images/i1.jpeg')} 
                               alt={service.name}
                               className="w-12 h-12 object-cover rounded-md"
                             />

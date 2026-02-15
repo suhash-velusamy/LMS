@@ -28,7 +28,7 @@ const PaymentSuccess: React.FC = () => {
     const dateTime = payment?.timestamp ? new Date(payment.timestamp).toLocaleString() : generatedAt;
 
     // Item rows
-    const items = (order?.serviceItems || []).map((it, idx) => {
+    const items = (order?.serviceItems || []).map((it) => {
       const svc = services.find(s => s.id === it.serviceId);
       const dt = dressTypes.find(d => d.id === it.dressTypeId);
       const name = svc ? svc.name : it.serviceId;
@@ -50,7 +50,8 @@ const PaymentSuccess: React.FC = () => {
 
     // Try to generate PDF using jsPDF loaded from CDN. If it fails, fallback to HTML download.
     try {
-      const jsPDFModule: any = await import('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+      // @ts-ignore – dynamic CDN import not typed
+      const jsPDFModule: any = await import(/* @vite-ignore */ 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
       const { jsPDF } = jsPDFModule as any;
       const doc = new jsPDF({ unit: 'pt', format: 'a4' });
 
@@ -122,11 +123,14 @@ const PaymentSuccess: React.FC = () => {
     // Fallback: produce HTML receipt and download
     try {
       const itemsHtml = items.map(it => (
-        `<tr>
-          <td style="padding:8px;border:1px solid #e5e7eb">${escapeHtml(it.name)} - ${escapeHtml(it.dress)}<br/><small>Quality: ${escapeHtml(it.quality)}</small></td>
-          <td style="padding:8px;border:1px solid #e5e7eb;text-align:center">${it.quantity}</td>
-          <td style="padding:8px;border:1px solid #e5e7eb;text-align:right">₹${it.unitPrice.toFixed(2)}</td>
-          <td style="padding:8px;border:1px solid #e5e7eb;text-align:right">₹${it.lineTotal.toFixed(2)}</td>
+        `<tr class="item-row">
+          <td>
+            <div class="item-title">${escapeHtml(it.name)} - ${escapeHtml(it.dress)}</div>
+            <div class="item-meta">Quality: ${escapeHtml(it.quality)}</div>
+          </td>
+          <td>${it.quantity}</td>
+          <td>₹${it.unitPrice.toFixed(2)}</td>
+          <td>₹${it.lineTotal.toFixed(2)}</td>
         </tr>`
       )).join('');
 
@@ -136,58 +140,203 @@ const PaymentSuccess: React.FC = () => {
   <meta charset="utf-8" />
   <title>${escapeHtml(receiptTitle)} - ${escapeHtml(orderNumber)}</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root {
+      color-scheme: light;
+      --brand: #2563eb;
+      --brand-muted: #dbeafe;
+      --accent: #10b981;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --border: #e2e8f0;
+      --muted: #f8fafc;
+      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #edf2ff, #f8fbff);
+      color: var(--text-primary);
+      padding: 32px 16px 48px;
+    }
+    .receipt-card {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 24px;
+      border: 1px solid rgba(15,23,42,0.06);
+      box-shadow: 0 30px 60px rgba(15,23,42,0.08);
+      overflow: hidden;
+    }
+    header {
+      padding: 32px;
+      background: radial-gradient(circle at top right, rgba(37,99,235,0.15), transparent 40%), #fff;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    header .brand {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--brand);
+    }
+    header .meta {
+      text-align: right;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+    main {
+      padding: 0 32px 32px;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .info-card {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      background: var(--muted);
+    }
+    .info-card h3 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .info-card div {
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+    }
+    th {
+      text-align: left;
+      font-size: 12px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #eef2ff;
+      font-size: 15px;
+    }
+    td:nth-child(2),
+    td:nth-child(3),
+    td:nth-child(4) {
+      text-align: center;
+    }
+    td:nth-child(3),
+    td:nth-child(4) {
+      font-variant-numeric: tabular-nums;
+    }
+    .item-title {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .item-meta {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    .totals {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      flex-direction: column;
+      align-items: flex-end;
+      margin-bottom: 16px;
+    }
+    .totals div {
+      font-size: 15px;
+      color: var(--text-secondary);
+    }
+    .totals .discount {
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .totals .grand {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--brand);
+    }
+    footer {
+      padding: 20px 32px 32px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+    @media (max-width: 640px) {
+      header, main, footer { padding: 24px; }
+      th, td { padding: 10px 8px; font-size: 13px; }
+      header .meta { text-align: left; }
+    }
+  </style>
 </head>
-<body style="font-family:Arial,Helvetica,sans-serif;color:#111827;padding:24px;">
-  <div style="max-width:800px;margin:0 auto;border:1px solid #e5e7eb;padding:20px;border-radius:8px;">
-    <header style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+<body>
+  <div class="receipt-card">
+    <header>
       <div>
-        <h1 style="margin:0;font-size:20px;color:#111827">${escapeHtml(companyName)}</h1>
-        <div style="color:#6b7280">${escapeHtml(receiptTitle)}</div>
+        <div class="brand">${escapeHtml(companyName)}</div>
+        <div>${escapeHtml(receiptTitle)}</div>
       </div>
-      <div style="text-align:right;color:#6b7280">
-        <div>Generated: ${escapeHtml(generatedAt)}</div>
+      <div class="meta">
+        <div>Generated</div>
+        <strong>${escapeHtml(generatedAt)}</strong>
       </div>
     </header>
 
-    <section style="margin-bottom:16px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;">
-      <div style="flex:1;min-width:220px">
-        <h3 style="margin:0 0 8px 0;font-size:14px;color:#374151">Payment</h3>
-        <div style="color:#111827">Transaction ID: ${escapeHtml(txn)}</div>
-        <div style="color:#111827">Payment Method: ${escapeHtml(method)}</div>
-        <div style="color:#111827">Status: ${escapeHtml(status)}</div>
-        <div style="color:#111827">Date: ${escapeHtml(dateTime)}</div>
+    <main>
+      <div class="info-grid">
+        <div class="info-card">
+          <h3>Payment</h3>
+          <div>Transaction: ${escapeHtml(txn)}</div>
+          <div>Method: ${escapeHtml(method)}</div>
+          <div>Status: ${escapeHtml(status)}</div>
+          <div>Date: ${escapeHtml(dateTime)}</div>
+        </div>
+        <div class="info-card">
+          <h3>Order</h3>
+          <div>Order ID: ${escapeHtml(orderNumber)}</div>
+          <div>Pickup: ${escapeHtml(order?.pickupDate ? new Date(order.pickupDate).toLocaleDateString() : 'To be scheduled')}</div>
+          <div>Time: ${escapeHtml(order?.pickupTime || 'To be scheduled')}</div>
+          <div>Address: ${escapeHtml(order?.address || 'Address not provided')}</div>
+        </div>
       </div>
-      <div style="flex:1;min-width:220px">
-        <h3 style="margin:0 0 8px 0;font-size:14px;color:#374151">Order</h3>
-        <div style="color:#111827">Order ID: ${escapeHtml(orderNumber)}</div>
-        <div style="color:#111827">Pickup: ${escapeHtml(order?.pickupDate || 'To be scheduled')}</div>
-        <div style="color:#111827">Time: ${escapeHtml(order?.pickupTime || 'To be scheduled')}</div>
-        <div style="color:#111827">Address: ${escapeHtml(order?.address || 'Address not provided')}</div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Qty</th>
+            <th>Unit</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${itemsHtml || `<tr><td colspan="4" style="text-align:center;padding:18px;color:var(--text-secondary)">No items found</td></tr>`}
+        </tbody>
+      </table>
+
+      <div class="totals">
+        ${originalTotal ? `<div>Subtotal: ₹${originalTotal.toFixed(2)}</div>` : ''}
+        ${originalTotal ? `<div class="discount">Discount: ₹${discount.toFixed(2)}</div>` : ''}
+        <div class="grand">Amount Paid: ${escapeHtml(paidAmountStr)}</div>
       </div>
-    </section>
+    </main>
 
-    <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
-      <thead>
-        <tr>
-          <th style="padding:8px;border:1px solid #e5e7eb;text-align:left;background:#f9fafb">Description</th>
-          <th style="padding:8px;border:1px solid #e5e7eb;text-align:center;background:#f9fafb">Qty</th>
-          <th style="padding:8px;border:1px solid #e5e7eb;text-align:right;background:#f9fafb">Unit</th>
-          <th style="padding:8px;border:1px solid #e5e7eb;text-align:right;background:#f9fafb">Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${itemsHtml || `<tr><td colspan="4" style="padding:12px;border:1px solid #e5e7eb;text-align:center;color:#6b7280">No items found</td></tr>`}
-      </tbody>
-    </table>
-
-    <div style="display:flex;justify-content:flex-end;gap:12px;flex-direction:column;align-items:flex-end">
-      ${originalTotal ? `<div style="color:#6b7280">Subtotal: ₹${originalTotal.toFixed(2)}</div>` : ''}
-      ${originalTotal ? `<div style="color:#16a34a;font-weight:600">Discount: ₹${discount.toFixed(2)}</div>` : ''}
-      <div style="font-size:18px;font-weight:700">Amount Paid: ${escapeHtml(paidAmountStr)}</div>
-    </div>
-
-    <footer style="margin-top:20px;color:#6b7280;font-size:12px">
-      Thank you for using ${escapeHtml(companyName)}. If you have any questions, contact support.
+    <footer>
+      Thank you for choosing ${escapeHtml(companyName)}. Need help? Contact our support any time.
     </footer>
   </div>
 </body>
@@ -215,11 +364,11 @@ const PaymentSuccess: React.FC = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Payment Not Found</h1>
-          <p className="text-gray-600 mb-6">The payment information could not be found.</p>
+          <h1 className="text-xl font-bold text-gray-900 mb-3">Payment Not Found</h1>
+          <p className="text-sm text-gray-600 mb-4">The payment information could not be found.</p>
           <button
             onClick={() => navigate('/')}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
           >
             Go Home
           </button>
@@ -232,26 +381,26 @@ const PaymentSuccess: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          <div className="bg-green-50 p-8 text-center">
-            <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-            <h1 className="text-3xl font-bold text-green-900 mb-2">Payment Successful!</h1>
-            <p className="text-green-700 text-lg">Your order has been placed successfully and payment has been processed.</p>
+          <div className="bg-green-50 p-6 text-center">
+            <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-3" />
+            <h1 className="text-lg md:text-xl font-bold text-green-900 mb-1">Payment Successful!</h1>
+            <p className="text-green-700 text-xs">Your order has been placed successfully and payment has been processed.</p>
 
             {order && (
-              <div className="mt-4 p-4 bg-white rounded-lg border border-green-200">
+              <div className="mt-3 p-3 bg-white rounded-lg border border-green-200">
                 <div className="flex items-center justify-center space-x-2 text-green-800">
-                  <Package className="h-5 w-5" />
-                  <span className="font-medium">Order #{order.id} Created Successfully</span>
+                  <Package className="h-4 w-4" />
+                  <span className="font-medium text-sm">Order #{order.id} Created Successfully</span>
                 </div>
-                <p className="text-green-700 text-sm mt-1">{order.serviceItems?.length || 0} items • ₹{order.totalAmount} • Status: {order.status}</p>
+                <p className="text-green-700 text-xs mt-1">{order.serviceItems?.length || 0} items • ₹{order.totalAmount} • Status: {order.status}</p>
               </div>
             )}
           </div>
 
-          <div className="p-8">
+          <div className="p-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-6">Payment Details</h2>
+                <h2 className="text-sm md:text-base font-semibold text-gray-900 mb-3">Payment Details</h2>
                 <div className="space-y-4">
                   <div className="flex justify-between py-2 border-b border-gray-200">
                     <span className="text-gray-600">Transaction ID</span>
@@ -281,34 +430,34 @@ const PaymentSuccess: React.FC = () => {
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-6">Order Information</h2>
+                <h2 className="text-sm md:text-base font-semibold text-gray-900 mb-3">Order Information</h2>
                 <div className="space-y-4">
                   <div className="flex items-start space-x-3">
-                    <Calendar className="h-5 w-5 text-blue-500 mt-1" />
+                    <Calendar className="h-4 w-4 text-blue-500 mt-1" />
                     <div>
                       <p className="font-medium text-gray-900">Pickup Date</p>
-                      <p className="text-gray-600">{payment.customerDetails?.pickupDate || 'To be scheduled'}</p>
+                      <p className="text-gray-600">{order?.pickupDate ? new Date(order.pickupDate).toLocaleDateString() : 'To be scheduled'}</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
-                    <Clock className="h-5 w-5 text-blue-500 mt-1" />
+                    <Clock className="h-4 w-4 text-blue-500 mt-1" />
                     <div>
                       <p className="font-medium text-gray-900">Pickup Time</p>
-                      <p className="text-gray-600">{payment.customerDetails?.pickupTime || 'To be scheduled'}</p>
+                      <p className="text-gray-600">{order?.pickupTime || 'To be scheduled'}</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
-                    <MapPin className="h-5 w-5 text-blue-500 mt-1" />
+                    <MapPin className="h-4 w-4 text-blue-500 mt-1" />
                     <div>
                       <p className="font-medium text-gray-900">Delivery Address</p>
-                      <p className="text-gray-600">{payment.customerDetails?.address || 'Address not provided'}</p>
+                      <p className="text-gray-600">{order?.address || 'Address not provided'}</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-                  <h3 className="font-semibold text-blue-900 mb-2">What's Next?</h3>
-                  <ul className="text-sm text-blue-800 space-y-1">
+                <div className="mt-6 p-3 bg-blue-50 rounded-lg">
+                  <h3 className="font-semibold text-blue-900 mb-1 text-sm">What's Next?</h3>
+                  <ul className="text-xs text-blue-800 space-y-1">
                     <li>• You'll receive a confirmation email shortly</li>
                     <li>• Our team will contact you to schedule pickup</li>
                     <li>• Track your order status in real-time</li>
@@ -318,24 +467,24 @@ const PaymentSuccess: React.FC = () => {
               </div>
             </div>
 
-            <div className="mt-8 flex flex-col sm:flex-row gap-4">
+            <div className="mt-6 flex flex-col sm:flex-row gap-3">
               <button
                 onClick={handleViewDashboard}
-                className="flex-1 bg-purple-600 text-white py-3 px-6 rounded-lg hover:bg-purple-700 transition-colors font-medium flex items-center justify-center"
+                className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors text-sm flex items-center justify-center"
               >
-                <Package className="h-5 w-5 mr-2" />
+                <Package className="h-4 w-4 mr-2" />
                 View Dashboard
               </button>
               <button
                 onClick={handleDownloadReceipt}
-                className="flex-1 border border-gray-300 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-50 transition-colors font-medium flex items-center justify-center"
+                className="flex-1 border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors text-sm flex items-center justify-center"
               >
-                <Download className="h-5 w-5 mr-2" />
+                <Download className="h-4 w-4 mr-2" />
                 Download Receipt
               </button>
               <button
                 onClick={handleNewOrder}
-                className="flex-1 bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors font-medium"
+                className="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors text-sm"
               >
                 Place New Order
               </button>

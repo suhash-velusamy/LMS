@@ -1,0 +1,40 @@
+{
+  "name": "final_project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run client:dev\" \"npm run server:dev\"",
+    "build": "concurrently \"npm run client:build\" \"npm run server:build\"",
+    "start": "concurrently \"npm run client:start\" \"npm run server:start\"",
+    "client:dev": "cd laundry_system-main && npm run dev",
+    "client:build": "cd laundry_system-main && npm run build",
+    "client:start": "cd laundry_system-main && npm run preview",
+    "server:dev": "cd server && npm run dev",
+    "server:build": "cd server && npm run build",
+    "server:start": "cd server && npm run start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SUHASHVELU/full_stack_.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SUHASHVELU/full_stack_/issues"
+  },
+  "homepage": "https://github.com/SUHASHVELU/full_stack_#readme"
+}
+
+
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/suhash-velusamy/LMS.git
+git push -u origin main
