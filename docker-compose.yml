@@ -1,0 +1,52 @@
+
+services:
+  # ----------------------------------------
+  # MongoDB Service
+  # ----------------------------------------
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017" # Maps host port 27017 to container port 27017
+    volumes:
+      - mongodb_data:/data/db # Persists database data across container restarts
+    restart: unless-stopped
+
+  # ----------------------------------------
+  # Backend Node.js Service
+  # ----------------------------------------
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "5000:5000"
+    environment:
+      # We update the backend MongoDB connection string to use Docker service name "mongodb"
+      - MONGO_URI=mongodb://mongodb:27017/lms
+      - CORS_ORIGIN=http://localhost:5173
+      - PORT=5000
+    depends_on:
+      - mongodb # Ensures mongodb starts before the backend
+    restart: unless-stopped
+
+  # ----------------------------------------
+  # Frontend React (Vite) Service
+  # ----------------------------------------
+  frontend:
+    build:
+      context: ./laundry_system-main
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    environment:
+      # The frontend runs in your browser, so it accesses the backend via localhost
+      - VITE_API_BASE=http://localhost:5000
+    depends_on:
+      - backend # Ensures backend starts before the frontend
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:

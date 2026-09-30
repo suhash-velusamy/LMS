@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  namespace: lms-system
+  labels:
+    app: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: ghcr.io/suhashvelu/lms-frontend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5173
+          env:
+            - name: VITE_API_BASE
+              valueFrom:
+                configMapKeyRef:
+                  name: lms-config
+                  key: VITE_API_BASE
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: lms-system
+  labels:
+    app: frontend
+spec:
+  type: NodePort
+  ports:
+    - port: 5173
+      targetPort: 5173
+      nodePort: 30173
+      protocol: TCP
+  selector:
+    app: frontend
